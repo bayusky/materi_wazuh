@@ -1,0 +1,42 @@
+Semua docker container runtime logs tersimpan pada ```/var/lib/docker/containers/<CONTAINER_ID>/<CONTAINER_ID>-json.log```
+Yang akan dilakukan adalah membaca log tersebut dan memunculkan alert berdasarkan wazuh-rules
+Tambahkan konfigurasi ini pada file ```/var/ossec/etc/ossec.conf```
+```
+<localfile>
+  <log_format>syslog</log_format>
+  <location>/var/lib/docker/containers/*/*-json.log</location>
+</localfile>
+```
+>Menggunakan wildcard (*) supaya dapat membaca log dari semua container
+Restart wazuh agent
+```
+systemctl restart wazuh-agent
+```
+
+Beralih ke wazuh server
+Masukkan konfigurasi berikut ke decoder file ```/var/ossec/etc/decoders/local_decoder.xml``` pada wazuh server
+```
+<decoder name="web-accesslog-docker">
+  <parent>json</parent>
+  <type>web-log</type>
+  <use_own_name>true</use_own_name>
+  <prematch offset="after_parent">^log":"\S+ \S+ \S+ \.*[\S+ \S\d+] \.*"\w+ \S+ HTTP\S+" \d+</prematch>
+  <regex offset="after_parent">^log":"(\S+) \S+ \S+ \.*[\S+ \S\d+] \.*"(\w+) (\S+) HTTP\S+" (\d+)</regex>
+  <order>srcip,protocol,url,id</order>
+</decoder>
+
+<decoder name="json">
+  <parent>json</parent>
+  <use_own_name>true</use_own_name>
+  <plugin_decoder>JSON_Decoder</plugin_decoder>
+</decoder>
+```
+>Decoder ```web-accesslog-docker``` mengekstrak bidang-bidang yang relevan dalam log web, dan mengatur jenis log menjadi ```web-log``` sehingga mesin analisis Wazuh dapat menganalisis log tersebut untuk serangan terhadap web.
+>```json``` decoder memungkinkan Wazuh untuk memproses log sebagai json log biasa untuk event yang tidak termasuk web log
+
+Restart wazuh manager
+```
+systemctl restart wazuh-manager
+```
+
+Lakukan serangan web (SQLi atau XSS) lalu lihat alert pada Security Events
