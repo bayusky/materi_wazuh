@@ -1,0 +1,30 @@
+Install dependency
+```
+apt-get update && apt-get install python3
+```
+
+Install pip
+```
+apt-get install python3-pip
+```
+
+Install python docker module
+```
+pip3 install docker==4.2.0
+```
+
+Pada agent, masukkan line ini oada file konfigurasi ```/var/ossec/etc/ossec.conf```
+```
+  <wodle name="docker-listener">
+    <interval>10m</interval>
+    <attempts>5</attempts>
+    <run_on_start>no</run_on_start>
+    <disabled>no</disabled>
+  </wodle>
+```
+
+Restart wazuh-agent
+```
+systemctl restart wazuh-agent
+```
+
