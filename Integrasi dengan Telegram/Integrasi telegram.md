@@ -12,8 +12,8 @@ Kirim wazuh alert melalui telegram menggunakan telegram bot.
 
 4. Atur permission untuk 2 file tersebut:
 ```
-#chown root:wazuh /var/ossec/integrations/custom-telegram*
-#chmod 750 /var/ossec/integrations/custom-telegram*
+chown root:wazuh /var/ossec/integrations/custom-telegram*
+chmod 750 /var/ossec/integrations/custom-telegram*
 ```
 
 5. Masukkan API KEY ke dalam blok konfigurasi ini dan copy blok ke dalam file `/var/ossec/etc/ossec.conf`
@@ -27,5 +27,5 @@ Kirim wazuh alert melalui telegram menggunakan telegram bot.
 ```
 6. Restart wazuh server
 ```
-#systemctl restart wazuh-manager
+systemctl restart wazuh-manager
 ```
