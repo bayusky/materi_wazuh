@@ -3,7 +3,7 @@ Kirim wazuh alert melalui telegram menggunakan telegram bot.
 
 1. Buat Telegram bot dan simpan **API KEY** dan **CHAT ID**, gunakan link ini untuk mendapatkan CHAT ID : `https://api.telegram.org/bot<HTTP-API>/getUpdates`.
 
-2. Cek library tang dibutuhkan :
+2. Cek library yang dibutuhkan :
 ```
 #pip install requests
 ```
